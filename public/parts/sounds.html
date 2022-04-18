@@ -1,0 +1,60 @@
+<div class="audio" data-bind="keys__template">
+    <script type="text/html">
+        <div class="audio__description">Type key on your keyboard</div>
+       
+        <div class="audio__keys">
+            {{ foreach sound in value }}
+                <div class="audio__keys--name" data-key="{{ sound.id }}">{{ sound.name }}</div>
+            {{ end }}
+        </div>
+    </script>
+</div>
+
+
+<script>
+    const translator_query = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=sk&q=fokume";
+
+    const keys = [
+        { id: 65, name: 'a' },
+        { id: 83, name: 's' },
+        { id: 68, name: 'd' },
+        { id: 70, name: 'f' },
+        { id: 71, name: 'g' },
+        { id: 72, name: 'h' },
+        { id: 74, name: 'j' },
+    ];
+
+    SET('keys', keys);
+
+    const sounds = [
+        { id: 1, name: 'Hej Jaro!', path: 'sounds/hej_jaro.mp3', key: 65 }, //a
+        { id: 1, name: 'Nice', path: 'sounds/nice.mp3', key: 83 },//s
+        { id: 1, name: 'Wow', path: 'sounds/wow_5.mp3', key: 68 }, //d
+        { id: 1, name: 'Začni už robiť', path: 'sounds/zacni_uz_robit.mp3', key: 70 }, //f
+        { id: 1, name: 'Zase sa zajebávaš!', path: 'sounds/zase_sa_zajebavas.mp3', key: 71 }, //g
+        { id: 1, name: 'Crowd', path: 'sounds/supa_hot_fire.mp3', key: 72 }, //h
+        { id: 1, name: 'Respect', path: 'sounds/san_andreas.mp3', key: 74 }, //j
+    ];
+
+    document.addEventListener('keydown', function(e) {
+        const code = e.keyCode;
+        const sound = sounds.find(x => x.key == code);
+        
+        const el = document.querySelector(`[data-key="${code}"]`);
+        if (sound) {
+            const audio = new Audio(sound.path);
+            audio.addEventListener('loadedmetadata', meta => {
+                console.log({test: audio.duration });
+                if (el) {
+                    console.log('co sa deje');
+                    const classes = el.classList;
+                    classes.add('selected');
+                    setTimeout(() => { classes.remove('selected') }, audio.duration * 1000);
+                }
+                audio.play();
+            });
+        }
+    });
+
+    SET('sounds', sounds);
+</script>
